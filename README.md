@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.png" alt="PasswordlessAuth Logo" width="200"/>
+  <img src="https://github.com/premaman10/PassWordLessAuth/blob/master/app/src/main/res/drawable/app_logo.png" alt="PasswordlessAuth Logo" width="200"/>
   <h1>PasswordlessAuth</h1>
   <p><strong>A Secure, Seamless, and Premium Authentication Experience</strong></p>
 
