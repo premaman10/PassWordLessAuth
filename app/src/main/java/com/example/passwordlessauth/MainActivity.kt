@@ -9,7 +9,6 @@ import androidx.navigation.compose.*
 import com.example.passwordlessauth.ui.*
 import com.example.passwordlessauth.viewmodel.AuthViewModel
 import timber.log.Timber
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +20,28 @@ class MainActivity : ComponentActivity() {
             val authViewModel: AuthViewModel = viewModel()
             val state by authViewModel.state.collectAsState()
 
+            // 🔥 State-driven navigation
+            LaunchedEffect(state.isOtpSent, state.isLoggedIn) {
+                when {
+                    state.isLoggedIn -> {
+                        navController.navigate(NavRoutes.SESSION) {
+                            popUpTo(NavRoutes.LOGIN) { inclusive = true }
+                        }
+                    }
+
+                    state.isOtpSent -> {
+                        navController.navigate(NavRoutes.OTP)
+                    }
+
+                    else -> {
+                        navController.navigate(NavRoutes.LOGIN) {
+                            popUpTo(0)
+                        }
+                    }
+                }
+            }
+
+            // 🎨 UI only here
             NavHost(
                 navController = navController,
                 startDestination = NavRoutes.LOGIN
@@ -36,20 +57,6 @@ class MainActivity : ComponentActivity() {
 
                 composable(NavRoutes.SESSION) {
                     SessionScreen(authViewModel)
-                }
-            }
-
-            // 🔥 Navigation side-effects based on state
-            LaunchedEffect(state.isOtpSent, state.isLoggedIn) {
-                when {
-                    state.isLoggedIn -> {
-                        navController.navigate(NavRoutes.SESSION) {
-                            popUpTo(0)
-                        }
-                    }
-                    state.isOtpSent -> {
-                        navController.navigate(NavRoutes.OTP)
-                    }
                 }
             }
         }

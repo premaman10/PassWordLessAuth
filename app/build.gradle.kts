@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.passwordlessauth"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -50,8 +50,11 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
-    // Material 3
+    // Material3
     implementation("androidx.compose.material3:material3")
+
+    implementation("com.google.android.material:material:1.13.0")
+
 
     // Activity Compose
     implementation("androidx.activity:activity-compose:1.9.0")
