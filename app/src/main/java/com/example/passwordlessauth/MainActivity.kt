@@ -4,11 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.example.passwordlessauth.ui.*
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import timber.log.Timber
 import com.example.passwordlessauth.ui.theme.PasswordlessAuthTheme
+import com.example.passwordlessauth.viewmodel.AuthViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
