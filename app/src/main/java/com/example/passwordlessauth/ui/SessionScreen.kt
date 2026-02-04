@@ -1,69 +1,140 @@
 package com.example.passwordlessauth.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.passwordlessauth.R
+import com.example.passwordlessauth.ui.theme.*
 import com.example.passwordlessauth.viewmodel.AuthViewModel
-import kotlinx.coroutines.delay
-import java.text.SimpleDateFormat
-import java.util.*
+
 @Composable
-fun SessionScreen(
-    vm: AuthViewModel
-) {
+fun SessionScreen(vm: AuthViewModel) {
     val state by vm.state.collectAsState()
-    val sessionStart = state.sessionStartTime ?: return
 
-    var elapsedTime by remember { mutableStateOf(0L) }
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse"
+    )
 
-    // Timer side-effect
-    LaunchedEffect(sessionStart) {
-        while (true) {
-            elapsedTime = (System.currentTimeMillis() - sessionStart) / 1000
-            delay(1000)
-        }
-    }
-
-    val minutes = elapsedTime / 60
-    val seconds = elapsedTime % 60
-
-    val formatter = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-    val startTimeFormatted = formatter.format(Date(sessionStart))
-
-    Column {
-
-        Text(
-            text = "Session Started At",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Text(text = startTimeFormatted)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Session Duration",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Text(
-            text = String.format("%02d:%02d", minutes, seconds),
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { vm.logout() }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(DeepIndigo, Color(0xFF2D2F45), DeepIndigo)
+                )
+            )
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Logout")
-        }
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .scale(pulseScale)
+                    .clip(CircleShape)
+                    .background(RadiantPurple.copy(alpha = 0.2f))
+                    .border(2.dp, RadiantPurple, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Success",
+                    tint = RadiantPurple,
+                    modifier = Modifier.size(64.dp)
+                )
+            }
 
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "Verified Successfully",
+                style = MaterialTheme.typography.displayLarge,
+                color = Color.White,
+                fontSize = 28.sp
+            )
+
+            Text(
+                text = "You are now securely logged in as",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = 0.7f),
+                fontSize = 14.sp
+            )
+            Text(
+                text = state.email,
+                style = MaterialTheme.typography.bodyLarge,
+                color = RadiantPurple,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(GlassWhite)
+                    .border(1.dp, GlassWhiteStroke, RoundedCornerShape(24.dp))
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Active Session Info",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = "Session started at ${java.text.SimpleDateFormat("HH:mm:ss").format(state.sessionStartTime)}",
+                    color = Color.White.copy(alpha = 0.6f),
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Button(
+                    onClick = vm::logout,
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White.copy(alpha = 0.1f),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Secure Logout", fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }

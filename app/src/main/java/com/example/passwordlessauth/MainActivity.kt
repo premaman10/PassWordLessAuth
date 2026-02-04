@@ -7,18 +7,21 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.example.passwordlessauth.ui.*
-import com.example.passwordlessauth.viewmodel.AuthViewModel
-import timber.log.Timber
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.passwordlessauth.ui.theme.PasswordlessAuthTheme
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         Timber.plant(Timber.DebugTree())
 
         setContent {
-            val navController = rememberNavController()
-            val authViewModel: AuthViewModel = viewModel()
-            val state by authViewModel.state.collectAsState()
+            PasswordlessAuthTheme {
+                val navController = rememberNavController()
+                val authViewModel: AuthViewModel = viewModel()
+                val state by authViewModel.state.collectAsState()
 
             // 🔥 State-driven navigation
             LaunchedEffect(state.isOtpSent, state.isLoggedIn) {
@@ -58,6 +61,7 @@ class MainActivity : ComponentActivity() {
                 composable(NavRoutes.SESSION) {
                     SessionScreen(authViewModel)
                 }
+            }
             }
         }
     }

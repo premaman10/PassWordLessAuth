@@ -69,6 +69,9 @@ dependencies {
     // Timber
     implementation("com.jakewharton.timber:timber:5.0.1")
 
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
