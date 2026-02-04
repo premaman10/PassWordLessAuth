@@ -13,7 +13,6 @@ import com.example.passwordlessauth.viewmodel.AuthViewModel
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
-
 @Composable
 fun SessionScreen(
     vm: AuthViewModel
@@ -23,7 +22,7 @@ fun SessionScreen(
 
     var elapsedTime by remember { mutableStateOf(0L) }
 
-    // 🔥 Timer side-effect
+    // Timer side-effect
     LaunchedEffect(sessionStart) {
         while (true) {
             elapsedTime = (System.currentTimeMillis() - sessionStart) / 1000
@@ -60,8 +59,11 @@ fun SessionScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = vm::logout) {
+        Button(
+            onClick = { vm.logout() }
+        ) {
             Text("Logout")
         }
+
     }
 }

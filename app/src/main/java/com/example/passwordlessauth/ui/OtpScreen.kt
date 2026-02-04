@@ -10,6 +10,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.passwordlessauth.viewmodel.AuthViewModel
 
@@ -60,12 +61,12 @@ fun OtpScreen(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-
-        state.error?.let {
+        if (state.error != null) {
             Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error
+                text = state.error!!,
+                color = Color.Red
             )
         }
+
     }
 }

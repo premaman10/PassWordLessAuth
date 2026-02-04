@@ -1,22 +1,23 @@
 package com.example.passwordlessauth.analytics
 
 import timber.log.Timber
-
 object AnalyticsLogger {
 
+    private const val TAG = "AUTH"
+
     fun logOtpGenerated() {
-        Timber.d("OTP generated")
+        Timber.tag(TAG).d("OTP generated")
     }
 
     fun logOtpSuccess() {
-        Timber.d("OTP validation success")
+        Timber.tag(TAG).d("OTP verified successfully")
     }
 
     fun logOtpFailure() {
-        Timber.d("OTP validation failure")
+        Timber.tag(TAG).d("OTP verification failed")
     }
 
     fun logLogout() {
-        Timber.d("User logged out")
+        Timber.tag(TAG).d("User logged out")
     }
 }
