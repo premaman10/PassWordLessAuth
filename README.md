@@ -1,160 +1,88 @@
-# Passwordless Authentication App (Email + OTP)
+<div align="center">
+  <img src="assets/logo.png" alt="PasswordlessAuth Logo" width="200"/>
+  <h1>PasswordlessAuth</h1>
+  <p><strong>A Secure, Seamless, and Premium Authentication Experience</strong></p>
 
-This project is an Android application built using **Kotlin** and **Jetpack Compose** that demonstrates a **passwordless authentication flow** using **Email + OTP**, followed by a **session screen** that tracks login duration in real time.
-
-The goal of this assignment was not just to make the app work, but to demonstrate **clear understanding of state management, architecture, and modern Android development practices**, without relying on any backend.
-
----
-
-## Tech Stack
-
-- **Language:** Kotlin  
-- **UI:** Jetpack Compose (Material 3)  
-- **Architecture:** Single Activity + ViewModel + UI State  
-- **State Management:** StateFlow, `remember`, `rememberSaveable`  
-- **Async / Side Effects:** Kotlin Coroutines, `LaunchedEffect`  
-- **Navigation:** Navigation Compose  
-- **External SDK:** Timber (Logging)
+  [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-purple.svg?style=flat&logo=kotlin)](https://kotlinlang.org/)
+  [![Android](https://img.shields.io/badge/Android-Jetpack_Compose-green.svg?style=flat&logo=android)](https://developer.android.com/jetpack/compose)
+  [![Material 3](https://img.shields.io/badge/UI-Material_3-blue.svg?style=flat&logo=material-design)](https://m3.material.io/)
+  [![Lokal App Assignment](https://img.shields.io/badge/Assignment-Lokal_App-orange.svg?style=flat)](https://www.lokal.app/)
+</div>
 
 ---
 
-## App Flow
-
-1. User enters an email address  
-2. User requests an OTP  
-3. A 6-digit OTP is generated locally  
-4. User verifies the OTP  
-5. On success, a session screen is shown  
-6. Session start time and live duration (mm:ss) are displayed  
-7. User can logout and return to the login screen  
-
-All logic is implemented **locally**, without any backend.
+## 👨‍💻 Developed by Prem Aman
+This project was developed as a technical assignment for the **Lokal App** team. The goal was to build a robust, production-ready passwordless authentication flow that prioritizes user experience and security without needing a backend.
 
 ---
 
-## OTP Logic & Expiry Handling
+## ✨ Features
 
-- OTP length is **6 digits**
-- OTP validity is **60 seconds**
-- Maximum **3 attempts** are allowed
-- OTP is stored **per email**
-- Generating a new OTP:
-  - Invalidates the previous OTP
-  - Resets the attempt count
-
-### Implementation Details
-
-OTP logic is handled in a dedicated manager class using system time:
-
-- When an OTP is generated, the current time is stored
-- Expiry is calculated using:
-  `System.currentTimeMillis() + 60 seconds`
-- During validation:
-  - Expiry time is checked
-  - Attempt count is reduced on failure
-  - OTP is rejected if expired, incorrect, or attempts are exhausted
-
-This approach avoids timers in the ViewModel and keeps business logic clean, predictable, and testable.
+- 📧 **Passwordless Login:** Fast and secure email-based authentication using OTP (One-Time Password).
+- 💎 **Glassmorphism UI:** A modern, premium design system featuring translucent surfaces and vibrant gradients.
+- 🔄 **State-Driven Navigation:** Smooth transitions between Login, OTP, and Session screens using Navigation Compose.
+- ⏱️ **Real-time Session Tracking:** Live session duration display with accurate management.
+- 🛡️ **Advanced OTP Logic:** 
+  - 60-second expiration window.
+  - Multi-attempt protection (Max 3 attempts).
+  - Secure local invalidation on resend.
+- 📈 **Integrated Analytics:** Event logging using the Timber SDK for operational visibility.
 
 ---
 
-## Data Structures Used
+## 🛠 Tech Stack & Architecture
 
-A `MutableMap<String, OtpData>` is used to store OTP information.
+- **Language:** 100% Kotlin
+- **UI Framework:** Jetpack Compose (Material 3)
+- **Architecture:** Single Activity + ViewModel + MVI-style UI State
+- **Reactive Programming:** StateFlow & Kotlin Coroutines
+- **Logging/Analytics:** Timber SDK
+- **Design:** AI-Assisted Frontend & Aesthetic Optimization
 
-- **Key:** Email address  
-- **Value:** `OtpData` object containing:
-  - OTP value
-  - Expiry timestamp
-  - Remaining attempts
-
-This structure allows:
-- Fast lookup per email
-- Easy OTP invalidation on resend
-- Clean separation of authentication state
-
-Global mutable state was intentionally avoided to maintain clean architecture and predictable behavior.
+> [!NOTE]
+> **AI Assistance Disclosure:** To ensure industry-leading aesthetics and development efficiency, the **UI design and front-end polishing** were optimized with the help of advanced AI tools. This allowed for a higher level of visual excellence and cleaner styling tokens while keeping the core business logic hand-crafted.
 
 ---
 
-## External SDK Choice: Timber
+## 📸 visual Walkthrough
 
-**Timber** was used as the external SDK for logging important events such as:
-- OTP generation
-- OTP validation success
-- OTP validation failure
-- Logout
+### 1. Secure Entry
+The entry point focuses on simplicity. The user provides an email and triggers the secure OTP generation.
 
-### Why Timber?
+### 2. Time-Sensitive Verification
+A clean OTP input field with real-time feedback. The logic handles expiration and incorrect attempts gracefully to prevent brute-force attacks.
 
-- Lightweight and easy to integrate
-- Works completely offline
-- Logs are immediately visible in Logcat
-- Commonly used in real production apps
-
-### Why not Firebase Analytics or Sentry?
-
-- **Firebase Analytics** requires backend setup, internet connectivity, and a Firebase console, which is unnecessary for a local-logic assignment.
-- **Sentry** is mainly used for crash reporting and would be overkill for this use case.
-
-Timber keeps the focus on **application logic and architecture**, which aligns with the intent of the assignment.
+### 3. Active Session
+Once verified, the user enters a premium session screen showing active login time, reinforcing the sense of a secure, live authentication state.
 
 ---
 
-## Use of GPT vs My Own Understanding
+## 🧩 Technical Deep Dive: OTP Logic
 
-AI tools were allowed for this assignment and were used responsibly.
+The app uses a custom `OtpManager` that handles the core security logic:
 
-### Where GPT helped
-- Understanding trade-offs (e.g., Navigation Compose vs Intents)
-- Clarifying why certain tools (Timber vs Firebase/Sentry) were more appropriate
-- Debugging Compose + Kotlin 2.0 compiler configuration
-- Verifying best practices for `LaunchedEffect` and state-driven navigation
+```kotlin
+// Secure state management for OTPs
+private val otpStore = mutableMapOf<String, OtpData>()
+private val OTP_VALIDITY = 60_000L // 60s
+private val MAX_ATTEMPTS = 3
+```
 
-I frequently asked **“why this and not that”** to understand the reasoning before implementing.
-
-### What I implemented and understood myself
-- OTP generation, expiry, and attempt handling logic
-- Data structure selection and usage
-- ViewModel and UI state separation
-- StateFlow-based architecture
-- Compose UI screens (Login, OTP, Session)
-- Session timer using `LaunchedEffect`
-- Logout handling and cleanup
-- Single-activity, state-driven navigation
-
-The code was not blindly copied — it was built step-by-step with understanding and iteration.
+- **Persistence:** OTPs are stored in-memory during the session.
+- **Expiry:** Calculated using `System.currentTimeMillis()`.
+- **Cleanup:** State is cleared immediately upon successful verification or exhaustion of attempts.
 
 ---
 
-## Edge Cases Handled
+## 🚀 Getting Started
 
-- Expired OTP  
-- Incorrect OTP  
-- Exceeded OTP attempts  
-- OTP resend flow  
-- Screen rotation without losing state  
-- Timer stopping correctly on logout  
+1.  **Clone the Repo:** `git clone https://github.com/[your-username]/PasswordlessAuth.git`
+2.  **Open in Android Studio:** Use the latest version of Arctic Fox or later.
+3.  **Sync & Build:** Let Gradle download dependencies.
+4.  **Run:** Deployment to any emulator or physical device running API 24+.
 
 ---
 
-## How to Run
-
-1. Clone the repository  
-2. Open the project in Android Studio (latest version recommended)  
-3. Let Gradle sync  
-4. Run on an emulator or physical device  
-
-No additional setup is required.
-
----
-
-## Final Notes
-
-This project demonstrates:
-- Modern Android development with Jetpack Compose
-- Clean, state-driven architecture
-- Thoughtful technical decision-making
-- Clear understanding of **why** design choices were made
-
-The focus was on correctness, clarity, and learning — not just completing the task.
+<div align="center">
+  <p>Built with ❤️ by <strong>Prem Aman</strong> for <strong>Lokal App</strong></p>
+</div>
